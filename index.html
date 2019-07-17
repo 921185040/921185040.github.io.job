@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <style type="text/css">
+        *{
+            padding: 0px;
+            margin: 0px;
+            text-align: center
+        }
+        #box{
+            width: 90%;
+            margin: 20px auto;
+        }
+        #box ul{
+            list-style: none;
+            float: left;
+            width: 24%;
+            margin: 5px;
+        }
+        #box ul img{
+            width: 100%;
+            margin: 5px;
+            
+        }
+        a{
+            text-decoration: none;
+            color: white
+        }
+        body{
+            background-color: greenyellow
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <ul></ul>
+        <ul></ul>
+        <ul></ul>
+        <ul></ul>
+    </div>
+    
+    <script type="text/javascript">
+        var ulArr = document.querySelectorAll("ul");
+        var message = [];//文字描述
+        var pictrue = [];//路径
+        var picturesrc = [];//二进制
+        window.onload=function(){
+            // console.log("222222222222222222222222222222")
+            $.ajax({
+                type: "GET",  
+                url: "./data.json",  
+                contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+                dataType: "json",  
+                success:function(data){
+                    for(var i=0;i<data.length;i++){
+                        var messageSon = data[i].words
+                        message.push(messageSon)
+                        var pictrueSon = data[i].url
+                        pictrue.push(pictrueSon)
+                        var picturesrcSon =data[i].desc
+                        picturesrc.push(picturesrcSon)
+                    }
+                    createImg(20)
+                },
+                error:function(r){
+                    console.log(r)
+                }
+            })
+        };
+        
+        function createImg(count){
+            for(var i = 0; i < 100; i++){
+                var img = document.createElement("img");
+                img.src = `data:image/gif;base64,${picturesrc[i]}`;
+                img.alt = message[i]
+                var div = document.createElement('div')
+                div.innerText = message[i];
+                var a = document.createElement('a');
+                a.href = `${pictrue[i]}`
+                a.appendChild(img)
+                a.appendChild(div)
+                var li = document.createElement("li");
+                li.appendChild(a);
+                //假设一个最短的ul
+                var minHeightUl = ulArr[0];
+                //循环四个ul的长度
+                for (var j = 0 ;j < ulArr.length;j++){
+                    //如果那个li的高度最短
+                    if (minHeightUl.offsetHeight > ulArr[j].offsetHeight) {
+                        //当前最短的li赋值给minHeightUl
+                        minHeightUl = ulArr[j];
+                    }
+                }
+                //在最短的ul中插入li
+                minHeightUl.appendChild(li);
+            }
+        }
+        
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+image: node
+
+deploy:
+  cache:
+    paths:
+    - node_modules/
+    - picture/
+    - yarn.lock
+    - .cache/
+  script:
+  - yarn --cache-folder ./.cache
+  - yarn run crawler
+  - node try.js
+  - yarn global add gh-pages --cache-folder ./.cache
+  - git config --global user.email ${GITLAB_USER_EMAIL}
+  - git config --global user.name ${GITLAB_USER_NAME}-${GITLAB_USER_LOGIN}
+  - gh-pages -g `date +%Y.%m.%d.%H.%M.%S` -d 24489-ldz -b matser -r https://code.choerodon.com.cn/24489/24489-ldz.git
+  only:
+  - master
